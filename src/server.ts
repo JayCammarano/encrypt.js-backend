@@ -4,15 +4,16 @@ import express from 'express';
 import logging from './config/logging';
 import config from './config/config';
 import sampleRoutes from './routes/sample';
+import { getTest, postTest, login } from './routes/jwt';
 
 const NAMESPACE = 'Server';
 const router = express();
 
 /** Log the request */
 router.use((req, res, next) => {
-    logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`, NAMESPACE);
+  logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`, NAMESPACE);
 
-    next();
+  next();
 });
 
 /** Parse the body of the request */
@@ -21,27 +22,30 @@ router.use(bodyParser.json());
 
 /** Rules of our API */
 router.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
-    if (req.method == 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-        return res.status(200).json({});
-    }
+  if (req.method == 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    return res.status(200).json({});
+  }
 
-    next();
+  next();
 });
 
 /** Routes go here */
 router.use('/api/sample', sampleRoutes);
+router.use('/api/jwt', getTest);
+router.use('/api/jwt', postTest);
+router.use('/api/jwt', login);
 
 /** Error handling */
 router.use((req, res, next) => {
-    const error = new Error('Not found');
+  const error = new Error('Not found');
 
-    res.status(404).json({
-        message: error.message
-    });
+  res.status(404).json({
+    message: error.message
+  });
 });
 
 const httpServer = http.createServer(router);
