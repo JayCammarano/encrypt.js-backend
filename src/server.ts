@@ -4,7 +4,6 @@ import express from 'express';
 import logging from './config/logging';
 import config from './config/config';
 import sampleRoutes from './routes/sample';
-import { getTest, postTest, login } from './routes/jwt';
 
 const NAMESPACE = 'Server';
 const router = express();
@@ -35,9 +34,6 @@ router.use((req, res, next) => {
 
 /** Routes go here */
 router.use('/api/sample', sampleRoutes);
-router.use('/api/jwt', getTest);
-router.use('/api/jwt', postTest);
-router.use('/api/jwt', login);
 
 /** Error handling */
 router.use((req, res, next) => {

@@ -1,11 +1,30 @@
-import { NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
-import verifyToken from '../../models/jwt';
-describe(`verifyToken`, () => {
-  it('is derived from headers', () => {
-    const req = {};
-    const res = {};
-    const next: NextFunction;
-    expect(verifyToken(req, res, next)).toBe('');
+import { generateJWT, validateJWT, decodeJWT } from '../../models/jwt';
+const tClaims = {
+  Username: 'test',
+  public_key: 'encryptedkey'
+};
+const tKey = 'testKey';
+const tAlgorithm = 'HS512';
+const tToken = generateJWT(tClaims, tKey, tAlgorithm);
+
+it('generates a JWT', () => {
+  const jwt = generateJWT(tClaims, tKey, tAlgorithm);
+
+  expect(typeof jwt).toBe('string');
+});
+
+it('validates the JWT', () => {
+  expect(validateJWT(tToken, tKey, tAlgorithm)).toBe(true);
+});
+
+it('decodes the JWT', () => {
+  const parsedToken = decodeJWT(tToken);
+
+  expect(parsedToken).toEqual({
+    header: {
+      alg: tAlgorithm,
+      typ: 'JWT'
+    },
+    claim: tClaims
   });
 });

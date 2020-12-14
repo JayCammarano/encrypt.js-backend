@@ -1,11 +1,9 @@
 import express from 'express';
 import controller from '../controllers/jwt';
-import verifyToken from '../models/jwt';
 
 const router = express.Router();
+router.post('/gen', controller.genJWT);
+router.post('/val', controller.valJWT);
+router.post('/decode', controller.decJWT);
 
-const getTest = router.get('/getTest', controller.getTest);
-const postTest = router.post('/postTest', controller.postTest);
-const login = router.post('/login', verifyToken(req, res, next), controller.login);
-
-export { getTest, postTest, login };
+export = router;
