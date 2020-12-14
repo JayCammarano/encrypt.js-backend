@@ -4,7 +4,7 @@ import express from 'express';
 import logging from './config/logging';
 import config from './config/config';
 import sampleRoutes from './routes/sample';
-
+import { gen, val, dec } from './routes/jwt';
 const NAMESPACE = 'Server';
 const router = express();
 
@@ -34,9 +34,12 @@ router.use((req, res, next) => {
 
 /** Routes go here */
 router.use('/api/sample', sampleRoutes);
+router.use('/api/jwt', gen);
+router.use('/api/jwt', val);
+router.use('/api/jwt', dec);
 
 /** Error handling */
-router.use((req, res, next) => {
+router.use((req, res) => {
   const error = new Error('Not found');
 
   res.status(404).json({

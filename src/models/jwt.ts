@@ -10,7 +10,7 @@ const generateJWT = (claims: Object, key: string, algorithm: string) => {
   const sClaims = JSON.stringify(claims);
   const sHeader = JSON.stringify(header);
 
-  return KJUR.jws.JWS.sign('HS512', sHeader, sClaims, key);
+  return KJUR.jws.JWS.sign(algorithm, sHeader, sClaims, key);
 };
 
 const validateJWT = (token: string, key: string, algorithm: string) => {

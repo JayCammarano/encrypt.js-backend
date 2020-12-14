@@ -2,8 +2,8 @@ import express from 'express';
 import controller from '../controllers/jwt';
 
 const router = express.Router();
-router.post('/gen', controller.genJWT);
-router.post('/val', controller.valJWT);
-router.post('/decode', controller.decJWT);
+const gen = router.post('/gen', controller.genJWT);
+const val = router.post('/val', controller.valJWT);
+const dec = router.post('/decode', controller.decJWT);
 
-export = router;
+export { gen, val, dec };
