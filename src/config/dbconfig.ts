@@ -1,13 +1,19 @@
 import { Sequelize } from 'sequelize';
 
-const connectDB = () => {
+const connectDB = async (): Promise<Sequelize> => {
   try {
     return new Sequelize(`postgres://spaghettios@localhost:5432/encrypted_events_ts`);
   } catch (error) {
     console.log(error);
-    return `Error: ${error}`;
+    return error;
   }
 };
+
+const modelDefiners = [
+  require('../models/user')
+  // Add more models here...
+  // require('./models/item'),
+];
 
 const testDB = async (db: Sequelize) => {
   try {
@@ -20,4 +26,4 @@ const testDB = async (db: Sequelize) => {
   }
 };
 
-export { connectDB, testDB };
+export { connectDB, testDB, modelDefiners };

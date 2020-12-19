@@ -3,7 +3,7 @@ import { connectDB, testDB } from '../../config/dbconfig';
 
 it('connects to the db', () => {
   const connected = connectDB();
-  expect(connected).toBeInstanceOf(Sequelize);
+  expect(connected).toBeInstanceOf(Promise);
 });
 
 it('tests the connection to the db when successfully connected', async () => {
