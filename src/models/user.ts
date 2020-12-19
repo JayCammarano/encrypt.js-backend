@@ -10,4 +10,17 @@ const createUser = async (username: string, password: string) => {
   return { user: { username: user.username, password: user.password, private_key: user.private_key } };
 };
 
-export { createUser };
+const findUser = async (username: string): Promise<User> => {
+  try {
+    const selectedUser = await User.findAll({
+      where: {
+        username: username
+      }
+    });
+    return selectedUser[0];
+  } catch (error) {
+    console.log('Error ', error);
+    return error;
+  }
+};
+export { createUser, findUser };
