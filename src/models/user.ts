@@ -1,39 +1,13 @@
-import { Sequelize as SequelizeClass, DataTypes } from 'sequelize';
-const sequelize = new SequelizeClass('postgres://spaghettios@localhost:5432/encrypted_events_ts');
-const createUserTable = () => {
-  sequelize.define('user', {
-    user_id: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        // We require usernames to have length of at least 3, and
-        // only use letters, numbers and underscores.
-        is: /^\w{3,}$/
-      }
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        // We require passwords to have length of at least 3, and
-        // only use letters, numbers and underscores.
-        is: /^\w{3,}$/
-      }
-    },
-    private_key: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    }
+import User from '../db/user.model';
+
+const createUser = async (username: string, password: string) => {
+  const private_key = 'This Will Be Encryted and Generated';
+  const user = await User.create({
+    username: username,
+    password: password,
+    private_key: private_key
   });
+  return { user: { username: user.username, password: user.password, private_key: user.private_key } };
 };
 
-export { createUserTable };
+export { createUser };

@@ -1,9 +1,9 @@
 import { Sequelize } from 'sequelize';
-import { connectDB, testDB } from '../../config/dbconfig';
+import { connectDB, testDB } from '../../db/dbconfig';
 
 it('connects to the db', () => {
   const connected = connectDB();
-  expect(connected).toBeInstanceOf(Promise);
+  expect(connected).toBeInstanceOf(Sequelize);
 });
 
 it('tests the connection to the db when successfully connected', async () => {
