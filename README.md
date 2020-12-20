@@ -4,21 +4,16 @@ A backend for an basic event manager with encryption using libsodium.
 
 **Encryption:**
 
-- libsodium / node-sodium
-
-**Frontend:**
-
-- JS/React
-- Tailwind
+- libsodium implemented as tweetnacl-ts
 
 **Backend**
 
-- Node.js/Express
-- PostgreSQL + Sequelize
+- Node.js as Express
+- PostgreSQL with Sequelize as an ORM
 
-**Testing (Testing? LMAO):**
+**Testing:**
 
-- Jest
+- Jest / ts-jest
 
 # Setup Commands:
 
