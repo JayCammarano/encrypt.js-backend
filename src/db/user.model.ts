@@ -1,15 +1,13 @@
-import { Sequelize, Model, ModelDefined, DataTypes, Optional } from 'sequelize';
-import { connectDB } from './dbconfig';
+import { Sequelize, Model, DataTypes } from 'sequelize';
 // These are all the attributes in the User model
 const sequelize = new Sequelize(`postgres://spaghettios@localhost:5432/encrypted_events_ts`);
 interface UserAttributes {
-  user_id: number;
   username: string;
   password: string;
   private_key: string;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'user_id'> {}
+interface UserCreationAttributes {}
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public user_id!: number;
   public username!: string;
@@ -25,12 +23,6 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 
 User.init(
   {
-    user_id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true
-    },
     username: {
       type: new DataTypes.STRING(128),
       unique: true,
