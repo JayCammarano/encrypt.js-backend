@@ -1,6 +1,6 @@
 import http from 'http';
 import bodyParser from 'body-parser';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import logging from './config/logging';
 import config from './config/config';
 import sampleRoutes from './routes/sample';
@@ -20,7 +20,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 /** Rules of our API */
-router.use((req, res, next) => {
+router.use((req: Request, res: Response, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
@@ -39,7 +39,7 @@ router.use('/api/jwt', val);
 router.use('/api/jwt', dec);
 
 /** Error handling */
-router.use((req, res) => {
+router.use((res: Response) => {
   const error = new Error('Not found');
 
   res.status(404).json({
