@@ -1,8 +1,9 @@
-import express from 'express';
-import controller from '../controllers/sample';
+import { Response } from 'express';
 
-const router = express.Router();
+const serverHealthCheck = (res: Response) => {
+  return res.status(200).json({
+    message: 'pong'
+  });
+};
 
-router.get('/ping', controller.serverHealthCheck);
-
-export = router;
+export default { serverHealthCheck };

@@ -1,5 +1,4 @@
 import express from 'express';
-import controller from '../controllers/jwt';
 
 const router = express.Router();
 const gen = router.post('/gen', controller.genJWT);

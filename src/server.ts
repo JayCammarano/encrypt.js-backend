@@ -1,15 +1,15 @@
 import http from 'http';
 import bodyParser from 'body-parser';
-import express from 'express';
+import express, { Response, Request, NextFunction } from 'express';
+import cors from 'cors';
 import logging from './config/logging';
 import config from './config/config';
-import sampleRoutes from './routes/sample';
-import { gen, val, dec } from './routes/jwt';
+
 const NAMESPACE = 'Server';
 const router = express();
 
 /** Log the request */
-router.use((req, res, next) => {
+router.use((req: Request, res: Response, next: NextFunction) => {
   logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`, NAMESPACE);
 
   next();
@@ -20,7 +20,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 /** Rules of our API */
-router.use((req, res, next) => {
+router.use((req: Request, res: Response, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
@@ -31,15 +31,12 @@ router.use((req, res, next) => {
 
   next();
 });
-
+router.use(cors);
 /** Routes go here */
-router.use('/api/sample', sampleRoutes);
-router.use('/api/jwt', gen);
-router.use('/api/jwt', val);
-router.use('/api/jwt', dec);
+router.use('/auth', require('./routes/auth'));
 
 /** Error handling */
-router.use((req, res) => {
+router.use((res: Response) => {
   const error = new Error('Not found');
 
   res.status(404).json({
