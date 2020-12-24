@@ -3,7 +3,7 @@ import { genJWT } from '../models/jwt';
 import { keyGen } from '../encryption/secretBox';
 import { userExists, bcryptPassword, insertUser } from '../models/auth';
 
-export const signIn = async (req: Request, res: Response) => {
+export const signUp = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   const secretKey = keyGen();
   const userCheck = await userExists(username);
