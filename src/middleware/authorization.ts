@@ -8,8 +8,10 @@ export const authorizer = async (req: Request, res: Response, next: NextFunction
     return res.status(403).json('Not Authorized');
   }
   try {
-    const payload = verify(token, SECRET);
-    req.user = payload.user;
+    const payload: Object = verify(token, SECRET);
+    if (payload) {
+      return true;
+    }
     next();
   } catch (err) {
     console.error(err.message);

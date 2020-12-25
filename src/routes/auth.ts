@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { signUp, signIn } from '../controllers/auth';
 import { validInfo } from '../middleware/validInfo';
 import { authorizer } from '../middleware/authorization';
