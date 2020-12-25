@@ -5,7 +5,7 @@ const secretKey = 'secretKeyTest';
 
 it('checks if user exists', async () => {
   const user = 'username';
-  expect(await userExists(user)).toBe('User Doesnt Exist');
+  expect(await userExists(user)).toBe(false);
 });
 
 it('Hashes a password with bcrypt', async () => {
@@ -13,7 +13,8 @@ it('Hashes a password with bcrypt', async () => {
 });
 
 it('creates a user in the database', async () => {
-  expect(await insertUser(username, password, secretKey)).toBe('Testestestestest');
+  const user = await insertUser(username, password, secretKey);
+  expect(user.user_name).toBe('Testestestestest');
 });
 
 it('gets the user if they exist', async () => {
