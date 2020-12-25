@@ -3,7 +3,7 @@ import cors from 'cors';
 import logging from './config/logging';
 import config, { SERVER_NAMESPACE } from './config/config';
 
-import authRouter from './routes/auth';
+import { router as authRouter } from './routes/auth';
 
 const app = express();
 /** Log the request */
