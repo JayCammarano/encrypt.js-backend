@@ -7,11 +7,11 @@ export const signUp = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   const secretKey = keyGen();
   const userCheck = await userExists(username);
-  if (userCheck == 'User Doesnt Exist') {
+  if (userCheck == true) {
     const hashWord = await bcryptPassword(password);
 
     const addedUser = await insertUser(username, hashWord, secretKey);
-    const token = genJWT(addedUser);
+    const token = genJWT(addedUser.user_name);
     return res.status(200).send(token);
   } else {
     return res.status(401).send('User already exists');
@@ -22,7 +22,7 @@ export const signIn = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   // 2
   const user = await userExists(username);
-  if (user === 'User Doesnt Exist') {
+  if (user === false) {
     return res.status(401).send('Password or Username is invalid');
   } else {
     const userObject = await getUser(username);
