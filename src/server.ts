@@ -1,5 +1,4 @@
 import express, { json, Response, Request, NextFunction } from 'express';
-import cors from 'cors';
 import logging from './config/logging';
 import config, { SERVER_NAMESPACE } from './config/config';
 
@@ -14,7 +13,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 /** Middleware */
-app.use(cors);
 app.use(json());
 
 /** Routes go here */
@@ -22,11 +20,7 @@ app.use(json());
 app.use('/auth', authRouter);
 /** Error handling */
 app.use((res: Response) => {
-  const error = new Error('Not found');
-
-  res.status(404).json({
-    message: error.message
-  });
+  return res.status(404).json('Not Found');
 });
 
 // const httpServer = http.createServer(app);

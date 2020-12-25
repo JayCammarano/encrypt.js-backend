@@ -22,7 +22,7 @@ it('gets the user if they exist', async () => {
   expect(user.user_name).toStrictEqual('Testestestestest');
 });
 
-it('compares bcrypt passwords to req password, false if no', async () => {
+it('compares bcrypt passwords to req password', async () => {
   const dbPassword = await bcryptPassword(password);
-  expect(await bcryptCompare(dbPassword, password)).toBe(false);
+  expect(await bcryptCompare(dbPassword, password)).toBe(true);
 });

@@ -7,25 +7,24 @@ export const signUp = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   const secretKey = keyGen();
   const userCheck = await userExists(username);
-  if (userCheck == true) {
+  if (userCheck == false) {
     const hashWord = await bcryptPassword(password);
 
     const addedUser = await insertUser(username, hashWord, secretKey);
     const token = genJWT(addedUser.user_name);
-    return res.status(200).send(token);
+    return res.status(200).send({ token });
   } else {
     return res.status(401).send('User already exists');
   }
 };
 export const signIn = async (req: Request, res: Response) => {
-  // 1
   const { username, password } = req.body;
-  // 2
   const user = await userExists(username);
-  if (user === false) {
+  if (!user) {
     return res.status(401).send('Password or Username is invalid');
   } else {
     const userObject = await getUser(username);
+
     const validPassword = await bcryptCompare(userObject.user_password, password);
     if (!validPassword) {
       return res.status(401).send('Password or Username is invalid');
@@ -39,6 +38,4 @@ export const signIn = async (req: Request, res: Response) => {
       token
     });
   }
-
-  // 3
 };
