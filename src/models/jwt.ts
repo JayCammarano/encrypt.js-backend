@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { SECRET } from '../config/config';
-export const genJWT = (user_id: string) => {
+
+export const genJWT = (username: string) => {
   const payload = {
-    user: user_id
+    user: username
   };
   return jwt.sign(payload, SECRET, { expiresIn: '1hr' });
 };
