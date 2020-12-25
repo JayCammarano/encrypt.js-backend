@@ -4,8 +4,7 @@ dotenv.config();
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';
 const SERVER_PORT = process.env.SERVER_PORT || 1337;
-const key = process.env.TOKEN_KEY || 'TO-DO Encryted Key Here';
-const alg = process.env.ALGORITHM || 'HS512';
+const SECRET = process.env.jwtSecret || 'defaultSecret';
 
 const SERVER = {
   hostname: SERVER_HOSTNAME,
@@ -17,4 +16,4 @@ const config = {
 };
 
 export default config;
-export { key, alg };
+export { SECRET };

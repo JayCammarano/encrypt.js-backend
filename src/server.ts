@@ -1,45 +1,28 @@
 import http from 'http';
-import bodyParser from 'body-parser';
-import express from 'express';
+import express, { json, Response, Request, NextFunction } from 'express';
+import cors from 'cors';
 import logging from './config/logging';
 import config from './config/config';
-import sampleRoutes from './routes/sample';
-import { gen, val, dec } from './routes/jwt';
-const NAMESPACE = 'Server';
-const router = express();
+import authRouter from './routes/auth';
 
+const NAMESPACE = 'Server';
+const app = express();
 /** Log the request */
-router.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`, NAMESPACE);
 
   next();
 });
 
-/** Parse the body of the request */
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(bodyParser.json());
-
-/** Rules of our API */
-router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
-  if (req.method == 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-    return res.status(200).json({});
-  }
-
-  next();
-});
+/** Middleware */
+app.use(cors);
+app.use(json());
 
 /** Routes go here */
-router.use('/api/sample', sampleRoutes);
-router.use('/api/jwt', gen);
-router.use('/api/jwt', val);
-router.use('/api/jwt', dec);
 
+app.use('/auth', authRouter);
 /** Error handling */
-router.use((req, res) => {
+app.use((res: Response) => {
   const error = new Error('Not found');
 
   res.status(404).json({
@@ -47,6 +30,6 @@ router.use((req, res) => {
   });
 });
 
-const httpServer = http.createServer(router);
+const httpServer = http.createServer(app);
 
 httpServer.listen(config.server.port, () => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`));
