@@ -1,18 +1,27 @@
-import { userExists, bcryptPassword, insertUser } from '../../models/auth';
+import { userExists, bcryptPassword, insertUser, getUser, bcryptCompare } from '../../models/auth';
+const username = 'Testestestestest';
+const password = 'testestestestsetsetestsetsetsetsetet';
+const secretKey = 'secretKeyTest';
 
 it('checks if user exists', async () => {
   const user = 'username';
-  expect(await userExists(user)).toBe('Carry on');
+  expect(await userExists(user)).toBe('User Doesnt Exist');
 });
 
 it('Hashes a password with bcrypt', async () => {
-  const password = 'TestTest';
   expect((await bcryptPassword(password)).length).toBe(60);
 });
 
 it('creates a user in the database', async () => {
-  const username = 'Testestestestest';
-  const password = 'testestestestsetsetestsetsetsetsetet';
-  const secretKey = 'secretKeyTest';
   expect(await insertUser(username, password, secretKey)).toBe('Testestestestest');
+});
+
+it('gets the user if they exist', async () => {
+  const user = await getUser(username);
+  expect(user.user_name).toStrictEqual('Testestestestest');
+});
+
+it('compares bcrypt passwords to req password, false if no', async () => {
+  const dbPassword = await bcryptPassword(password);
+  expect(await bcryptCompare(dbPassword, password)).toBe(false);
 });
