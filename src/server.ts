@@ -1,15 +1,14 @@
-import http from 'http';
 import express, { json, Response, Request, NextFunction } from 'express';
 import cors from 'cors';
 import logging from './config/logging';
-import config from './config/config';
+import config, { SERVER_NAMESPACE } from './config/config';
+
 import authRouter from './routes/auth';
 
-const NAMESPACE = 'Server';
 const app = express();
 /** Log the request */
 app.use((req: Request, res: Response, next: NextFunction) => {
-  logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`, NAMESPACE);
+  logging.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`, SERVER_NAMESPACE);
 
   next();
 });
@@ -30,6 +29,9 @@ app.use((res: Response) => {
   });
 });
 
-const httpServer = http.createServer(app);
+// const httpServer = http.createServer(app);
 
-httpServer.listen(config.server.port, () => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`));
+// httpServer.listen(() => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`));
+app.listen(config.server.port, () => {
+  logging.info(SERVER_NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`);
+});
