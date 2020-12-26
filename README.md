@@ -1,4 +1,4 @@
-A backend for an basic event manager with encryption using libsodium.
+A backend for a basic event manager with encryption using libsodium.
 
 # Technologies used:
 
