@@ -1,10 +1,10 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { config as dotenv } from 'dotenv';
+dotenv();
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';
 const SERVER_PORT = process.env.SERVER_PORT || 1337;
-const SECRET = process.env.jwtSecret || 'defaultSecret';
+const SECRET = process.env.JWTSECRET || 'defaultSecret';
+const SERVER_NAMESPACE = process.env.NAMESPACE || 'Server';
 
 const SERVER = {
   hostname: SERVER_HOSTNAME,
@@ -16,4 +16,4 @@ const config = {
 };
 
 export default config;
-export { SECRET };
+export { SECRET, SERVER_NAMESPACE };

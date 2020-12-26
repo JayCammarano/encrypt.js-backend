@@ -26,5 +26,5 @@ export const bcryptPassword = async (password: string) => {
 };
 
 export const bcryptCompare = async (dbPassword: string, clientPassword: string) => {
-  return await bcrypt.compare(dbPassword, clientPassword);
+  return await bcrypt.compare(clientPassword, dbPassword);
 };
