@@ -8,8 +8,8 @@ A backend for an basic event manager with encryption using libsodium.
 
 **Backend**
 
-- Node.js as Express
-- PostgreSQL with Sequelize as an ORM
+- Node.js Express
+- PostgreSQL
 
 **Testing:**
 
