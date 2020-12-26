@@ -3,14 +3,15 @@ import { verify } from 'jsonwebtoken';
 import { SECRET } from '../config/config';
 
 export const authorizer = async (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header('jwt_token');
+  const token = req.header('token');
   if (!token) {
     return res.status(403).json('Not Authorized');
   }
   try {
     const payload: Object = verify(token, SECRET);
+    console.log(payload);
     if (payload) {
-      return true;
+      req.auth = true;
     }
     next();
   } catch (err) {
