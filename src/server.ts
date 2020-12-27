@@ -3,6 +3,7 @@ import logging from './config/logging';
 import config, { SERVER_NAMESPACE } from './config/config';
 
 import { router as authRouter } from './routes/auth';
+import { router as dashRouter } from './routes/dashboard';
 
 const app = express();
 /** Log the request */
@@ -18,6 +19,7 @@ app.use(json());
 /** Routes go here */
 
 app.use('/auth', authRouter);
+app.use('/dashboard', dashRouter);
 /** Error handling */
 app.use((res: Response) => {
   return res.status(404).json('Not Found');
