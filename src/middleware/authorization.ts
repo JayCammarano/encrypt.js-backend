@@ -9,7 +9,6 @@ export const authorizer = async (req: Request, res: Response, next: NextFunction
   }
   try {
     const payload: Object = verify(token, SECRET);
-    console.log(payload);
     if (payload) {
       req.user = payload;
     }
