@@ -1,5 +1,6 @@
 declare namespace Express {
   interface Request {
-    auth?: Boolean;
+    user?: any;
+    event?: any;
   }
 }
