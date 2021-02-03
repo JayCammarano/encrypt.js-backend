@@ -21,24 +21,35 @@ export const findCreator = async (token: string) => {
   }
 }
 
+const lookupUserIDs = async (user: string) => {
+  try {
+    const user_id = await pool.query('SELECT user_id from users WHERE user_name = $1', [user])
+    if (user_id) {
+      return user_id.rows[0].user_id
+    }
+  } catch (error) {
+    console.log(error)
+  }  
+
+}
+
+export const addUsersToEvent = async (invitees: string[], event_id: number, creator_id: number) => {
+  pool.query('INSERT INTO user_event (user_id, event_id, creator) VALUES ($1, $2, $3) RETURNING *', [creator_id, event_id, 1]);
+  
+  const invitee_ids: Promise<string[]> =  Promise.all(invitees.map(async (user: string) => {
+   return lookupUserIDs(user)
+  }));
+
+  (await invitee_ids).forEach(async (user_id: string) => {
+    try {
+      await pool.query('INSERT INTO user_event (user_id, event_id, creator) VALUES ($1, $2, $3) RETURNING *', [user_id, event_id, 0]);
+    } catch (error) {
+      console.log(error)
+    }
+  });
+}
+
 export const insertEvent = async (encryptedEvent: string) => {
         const eventObject = await pool.query('INSERT INTO events (encrypted_event) VALUES ($1) RETURNING *', [encryptedEvent])
         return eventObject.rows[0].event_id
-    // const invitee_ids = decryptedEventObject.invitees.map(async (user: string) => {
-    //     return await pool.query('SELECT user_id from "Users" WHERE user_name = $1', [user])
-    // })
-    // const event_id = await pool.query('INSERT INTO events (encrypted_event, creator_id) VALUES ($1, $2) RETURNING event_id', [decryptedEventObject.encrypted_event, creator_id]);
-    
-    // pool.query('INSERT INTO user_event (user_id, event_id) VALUES ($1, $2) RETURNING *', [creator_id, event_id]);
-    
-    // invitee_ids.forEach((user_id: string)  => {
-    //     pool.query('INSERT INTO user_event (user_id, event_id) VALUES ($1, $2) RETURNING *', [user_id, event_id]);
-    // });
-    
 }
-
-
-const newEvent = (req: Request) => {
-    console.log(req.body)
-}
-export default newEvent;
