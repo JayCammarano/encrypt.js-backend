@@ -1,5 +1,6 @@
 declare namespace Express {
   interface Request {
-    user?: Object;
+    user?: any;
+    event?: any;
   }
 }
