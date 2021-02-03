@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
-import { SECRET } from '../config/config';
+import {verifyJWT } from "../models/jwt"
 
 export const authorizer = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('token');
@@ -8,7 +7,7 @@ export const authorizer = async (req: Request, res: Response, next: NextFunction
     return res.status(403).json('Not Authorized');
   }
   try {
-    const payload: Object = verify(token, SECRET);
+    const payload: Object = verifyJWT(token)
     if (payload) {
       req.user = payload;
     }
