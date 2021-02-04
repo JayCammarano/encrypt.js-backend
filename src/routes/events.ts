@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { authorizer } from '../middleware/authorization';
-
+import newEvent from "../controllers/events"
 const router = Router();
 
-router.get('/new', authorizer, async (req: Request, res: Response) => {
+router.post('/new', authorizer, async (req: Request, res: Response) => {
   try {
-      req
+    newEvent(req, res)
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

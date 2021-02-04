@@ -42,7 +42,7 @@ export const addUsersToEvent = async (invitees: string[], event_id: number, crea
 
   (await invitee_ids).forEach(async (user_id: string) => {
     try {
-      await pool.query('INSERT INTO user_event (user_id, event_id, creator) VALUES ($1, $2, $3) RETURNING *', [user_id, event_id, 0]);
+      await pool.query('INSERT INTO user_event (user_id, event_id, creator) VALUES ($1, $2, $3)', [user_id, event_id, 0])
     } catch (error) {
       console.log(error)
     }

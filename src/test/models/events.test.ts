@@ -29,5 +29,5 @@ it("adds relations of users and events", async () => {
 
   await addUsersToEvent(invitees, event_id, creator.user_id)
   const finalCount = (await pool.query('SELECT * from user_event WHERE event_id = $1', [event_id])).rows.length
-  expect(finalCount).toBe(2)
+  expect(finalCount).toBe(3)
 })
