@@ -44,3 +44,28 @@ export const insertEvent = async (encryptedEvent: string) => {
         const eventObject = await pool.query('INSERT INTO events (encrypted_event) VALUES ($1) RETURNING *', [encryptedEvent])
         return eventObject.rows[0].event_id
 }
+
+export const userEventLookup = async (user_id: string) => {
+  const events = await pool.query('SELECT event_id, creator from user_event WHERE user_id = $1', [user_id])
+  return events.rows
+}
+
+export const eventSorter = (events: any[]) => {
+  const sorted_events = {myEvents: [""],
+                        invitedEvents: [""] }
+  events.forEach(row => {
+    if(row.creator === true){
+      sorted_events.myEvents.push(row.event_id)
+    }else{
+      sorted_events.invitedEvents.push(row.event_id)
+    }
+  });
+
+  return sorted_events
+}
+
+export const eventsSerializer = async (username: string) => {
+  const user_id = await lookupUserIDs(username)
+  const events = await userEventLookup(user_id)
+  return eventSorter(events)
+}
