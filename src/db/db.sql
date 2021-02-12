@@ -1,4 +1,4 @@
-CREATE DATABASE encrypted_events_ts;
+CREATE DATABASE encrypted_events_ts_test;
 
 create extension if not exists "uuid-ossp";
 
@@ -13,7 +13,7 @@ CREATE TABLE users(
 CREATE TABLE events(
     event_id uuid PRIMARY KEY DEFAULT
     uuid_generate_v4(),
-    encrypted_event VARCHAR(255) NOT NULL
+    encrypted_event VARCHAR(255) NOT NULL,
     creator_id VARCHAR(255) NOT NULL
 );
 

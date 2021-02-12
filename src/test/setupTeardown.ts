@@ -3,8 +3,7 @@ export const setup = () => {
     pool.query("DROP TABLE users CASCADE")
     pool.query("DROP TABLE events CASCADE")
     pool.query("DROP TABLE user_event")
-
-
+    
     pool.query(`
         CREATE TABLE users(
             user_id uuid PRIMARY KEY DEFAULT
@@ -17,7 +16,8 @@ export const setup = () => {
     pool.query(`CREATE TABLE events(
         event_id uuid PRIMARY KEY DEFAULT
         uuid_generate_v4(),
-        encrypted_event VARCHAR(255) NOT NULL
+        encrypted_event VARCHAR(255) NOT NULL,
+        creator_id VARCHAR(255) NOT NULL
     );`)
 
     pool.query(`CREATE TABLE user_event (
