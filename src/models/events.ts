@@ -1,14 +1,6 @@
 import { pool } from "../db/db"
 import { verifyJWT } from "../models/jwt"
 
-// add the encrypted_event string, return event_id
-// create event_user associations:
-    // get creator by decrypting token
-    // get creator's pk
-    // decrypt event with creator's pk
-    // cycle through event.invitees and add them to the event with creator field 0
-    // add creator with creator field 1
-
 export const findCreator = async (token: string) => {
   try {
     const payload: any = verifyJWT(token)
@@ -30,7 +22,6 @@ const lookupUserIDs = async (user: string) => {
   } catch (error) {
     console.log(error)
   }  
-
 }
 
 export const addUsersToEvent = async (invitees: string[], event_id: number, creator_id: number) => {

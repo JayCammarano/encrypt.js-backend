@@ -6,6 +6,7 @@ const router = Router();
 router.post('/new', authorizer, async (req: Request, res: Response) => {
   try {
     newEvent(req, res)
+    res.status(200).send('Success');
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
