@@ -5,13 +5,14 @@ import { genJWT } from "../../models/jwt"
 import {pool} from "../../db/db"
 const token = genJWT('test')
 const encryptedEvent = "jH7L0tLCCrOluC5uKymDKHRRquK0GKtphWYODouf0KxeyXg98krGqrZ7AWAaOsC4eeM8"
-
+insertUser("test", "test2", "secretKeyTest");
 
 beforeAll(() => { setup })
 afterAll(() => { teardown })
 
 it('adds a new event to the db', async () => {
-  const event_id = await insertEvent(encryptedEvent)
+  const creator = await findCreator(token)
+  const event_id = await insertEvent(encryptedEvent, creator.user_id)
   expect(event_id.length).toBe(36);
 });
 
@@ -22,7 +23,7 @@ it("returns the creator user object", async () => {
 
 it('looks up events from a user', async () => {
   const creator = await findCreator(token)
-  const event_id = await insertEvent(encryptedEvent)
+  const event_id = await insertEvent(encryptedEvent, creator.user_id)
   await addUsersToEvent([creator], event_id, creator.user_id)
   const events = await userEventLookup(creator.user_id)
   expect(events[0].creator).toBe(true);
@@ -48,8 +49,8 @@ it('returns empty arrays when no events are found', async () => {
 
 it("adds relations of users and events", async () => {
   const invitees = ["test2", "test1", "test3"]
-  const event_id = await insertEvent(encryptedEvent)
   const creator = await findCreator(token)
+  const event_id = await insertEvent(encryptedEvent, creator.user_id)
 
   invitees.forEach(async (user) => { await insertUser(user, "test2", "secretKeyTest"); });
   await addUsersToEvent(invitees, event_id, creator.user_id)

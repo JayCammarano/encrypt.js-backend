@@ -40,8 +40,8 @@ export const addUsersToEvent = async (invitees: string[], event_id: number, crea
   });
 }
 
-export const insertEvent = async (encryptedEvent: string) => {
-        const eventObject = await pool.query('INSERT INTO events (encrypted_event) VALUES ($1) RETURNING *', [encryptedEvent])
+export const insertEvent = async (encryptedEvent: string, creatorId: string) => {
+        const eventObject = await pool.query('INSERT INTO events (encrypted_event, creator_id) VALUES ($1, $2) RETURNING *', [encryptedEvent, creatorId])
         return eventObject.rows[0].event_id
 }
 

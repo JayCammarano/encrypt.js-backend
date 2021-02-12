@@ -14,7 +14,7 @@ const newEvent = async (req: Request, res: Response) => {
         const creator = await findCreator(token)
         const decryptedEvent = decrypt(encryptedEvent, creator.secret_key)
         addUsersToEvent(decryptedEvent.invitees, event_id, creator.user_id)
-        
+        res.status(200).send('success')
       } catch (error) {
         res.status(500).send('Errors: \n' + error)
       }
