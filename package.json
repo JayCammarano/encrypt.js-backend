@@ -6,7 +6,7 @@
   "author": "@jaycammarano",
   "license": "ISC",
   "scripts": {
-    "dev": "tsnd --respawn src/server.ts",
+    "dev": "NODE_ENV=development tsnd --respawn src/server.ts",
     "dev:debug": "tsnd --respawn src/server.ts",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watchAll",

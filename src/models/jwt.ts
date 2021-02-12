@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, {verify} from 'jsonwebtoken';
 import { SECRET } from '../config/config';
 
 export const genJWT = (username: string) => {
@@ -7,3 +7,7 @@ export const genJWT = (username: string) => {
   };
   return jwt.sign(payload, SECRET, { expiresIn: '1hr' });
 };
+
+export const verifyJWT = (token: string) => {
+  return verify(token, SECRET);
+}
