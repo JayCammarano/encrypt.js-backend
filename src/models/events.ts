@@ -2,15 +2,25 @@ import { pool } from "../db/db"
 import { decrypt, encrypt } from "../encryption/secretBox"
 import { verifyJWT } from "../models/jwt"
 
-export const findCreator = async (token: string) => {
-  try {
+export const findCreatorIDFromToken = async (token: string) => {
     const payload: any = verifyJWT(token)
-    if (payload) {
+    try{
+      if (payload) {
         const creator = await pool.query('SELECT * from users WHERE user_name = $1', [payload.user])
         return creator.rows[0]
+      }
     }
-  } catch (err) {
-    console.error(err.message);
+    catch(err){
+      console.log()
+    }
+}
+
+export const findCreator = async (creator_id: string) => {
+  try {
+        const creator = await pool.query('SELECT secret_key from users WHERE user_id = $1', [creator_id])
+        return creator.rows[0]
+    } catch (err) {
+    console.error("findCreator" + err.message);
   }
 }
 
@@ -85,9 +95,11 @@ export const eventsSerializer = async (username: string, privateKey: string) => 
     const events = await userEventIDLookup(user_id)
     events.map(async (eventIDAndCreatorID) => {
     const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
+    // ERROR: Passing creator_id not token. 
+    // Should refactor to accept creator_id 
+    // and have second func find creator_id from token
     const creator = await findCreator(event.creator_id)
-    
-    const decryptedEvent = decryptEvent(event, creator.privateKey)
+    const decryptedEvent = decryptEvent(event.encrypted_event, creator.secret_key)
     return encryptEvent(decryptedEvent, privateKey)
   })
   

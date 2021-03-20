@@ -1,7 +1,7 @@
 import { pool } from "../../db/db";
 import { keyGen } from "../../encryption/secretBox";
 import { insertUser } from '../../models/auth';
-import { addUsersToEvent, decryptEvent, encryptEvent, eventSorter, eventsSerializer, findCreator, insertEvent, lookupEventFromID, userEventIDLookup } from "../../models/events";
+import { addUsersToEvent, decryptEvent, encryptEvent, eventSorter, eventsSerializer, findCreatorIDFromToken, insertEvent, lookupEventFromID, userEventIDLookup } from "../../models/events";
 import { genJWT } from "../../models/jwt";
 import { setup, teardown } from "../setupTeardown";
 
@@ -18,18 +18,18 @@ beforeAll(() => { setup })
 afterAll(() => { teardown })
 
 it('adds a new event to the db', async () => {
-  const creator = await findCreator(token)
+  const creator = await findCreatorIDFromToken(token)
   const event_id = await insertEvent(encryptedEvent, creator.user_id)
   expect(event_id.length).toBe(36);
 });
 
 it("returns the creator user object", async () => {
-  const creator = await findCreator(token)
+  const creator = await findCreatorIDFromToken(token)
   expect(creator.user_name).toBe("test")
 })
 
 it('looks up events from a user', async () => {
-  const creator = await findCreator(token)
+  const creator = await findCreatorIDFromToken(token)
   const event_id = await insertEvent(encryptedEvent, creator.user_id)
   await addUsersToEvent([creator], event_id, creator.user_id)
   const events = await userEventIDLookup(creator.user_id)
@@ -56,13 +56,13 @@ it('returns empty arrays when no events are found', async () => {
 });
 
 it('returns the encrypted event string', async () =>{
-  const creator = await findCreator(token)
+  const creator = await findCreatorIDFromToken(token)
   const encryptedEvent = encryptEvent(plainTextEvent, creator.secret_key)
   expect(encryptedEvent.length).toBe(96)
 })
 
 it('returns the decrypted event object', async () =>{
-  const creator = await findCreator(token)
+  const creator = await findCreatorIDFromToken(token)
   const encryptedEvent = encryptEvent(plainTextEvent, creator.secret_key)
   const eventObject = await decryptEvent(encryptedEvent, creator.secret_key)
   expect(eventObject).toStrictEqual({"event": "test", "title": "test"})
@@ -76,7 +76,7 @@ it('looks up events from event_id', async () => {
 
 it("adds relations of users and events", async () => {
   const invitees = ["test2", "test1", "test3"]
-  const creator = await findCreator(token)
+  const creator = await findCreatorIDFromToken(token)
   const event_id = await insertEvent(encryptedEvent, creator.user_id)
 
   invitees.forEach(async (user) => { await insertUser(user, "test2", "secretKeyTest"); });
