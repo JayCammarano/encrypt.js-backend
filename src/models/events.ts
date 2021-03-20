@@ -1,4 +1,5 @@
 import { pool } from "../db/db"
+import { decrypt, encrypt } from "../encryption/secretBox"
 import { verifyJWT } from "../models/jwt"
 
 export const findCreator = async (token: string) => {
@@ -40,12 +41,20 @@ export const addUsersToEvent = async (invitees: string[], event_id: number, crea
   });
 }
 
+export const decryptEvent = (event: string, privateKey: string) => {
+  return decrypt(event, privateKey)
+}
+
+export const encryptEvent = (event: object, privateKey: string) => {
+  return encrypt(event, privateKey)
+}
+
 export const insertEvent = async (encryptedEvent: string, creatorId: string) => {
         const eventObject = await pool.query('INSERT INTO events (encrypted_event, creator_id) VALUES ($1, $2) RETURNING *', [encryptedEvent, creatorId])
         return eventObject.rows[0].event_id
 }
 
-export const userEventLookup = async (user_id: string) => {
+export const userEventIDLookup = async (user_id: string) => {
   const events = await pool.query('SELECT event_id, creator from user_event WHERE user_id = $1', [user_id])
   return events.rows
 }
@@ -64,8 +73,23 @@ export const eventSorter = (events: any[]) => {
   return sorted_events
 }
 
-export const eventsSerializer = async (username: string) => {
-  const user_id = await lookupUserIDs(username)
-  const events = await userEventLookup(user_id)
+export const lookupEventFromID = async (eventId: string) => {
+    const events =  await pool.query('SELECT * from events WHERE event_id = $1', [eventId])
+    if(events.rows[0]){
+      return events.rows[0]
+    }
+  }
+ 
+export const eventsSerializer = async (username: string, privateKey: string) => {
+    const user_id = await lookupUserIDs(username)
+    const events = await userEventIDLookup(user_id)
+    events.map(async (eventIDAndCreatorID) => {
+    const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
+    const creator = await findCreator(event.creator_id)
+    
+    const decryptedEvent = decryptEvent(event, creator.privateKey)
+    return encryptEvent(decryptedEvent, privateKey)
+  })
+  
   return eventSorter(events)
 }
