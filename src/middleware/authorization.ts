@@ -1,10 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
-import {verifyJWT } from "../models/jwt"
+import { NextFunction, Request, Response } from 'express';
+import { verifyJWT } from "../models/jwt";
 
 export const authorizer = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('token');
   if (!token) {
-    return res.status(403).json('Not Authorized');
+    res.status(403).json('Not Authorized');
+    return false
   }
   try {
     const payload: Object = verifyJWT(token)
@@ -14,6 +15,7 @@ export const authorizer = async (req: Request, res: Response, next: NextFunction
     next();
   } catch (err) {
     console.error(err.message);
-    return res.status(403).json('Not Authorized');
+    res.status(403).json('Not Authorized');
+    next()
   }
 };
