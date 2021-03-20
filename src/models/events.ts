@@ -95,9 +95,6 @@ export const eventsSerializer = async (username: string, privateKey: string) => 
     const events = await userEventIDLookup(user_id)
     events.map(async (eventIDAndCreatorID) => {
     const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
-    // ERROR: Passing creator_id not token. 
-    // Should refactor to accept creator_id 
-    // and have second func find creator_id from token
     const creator = await findCreator(event.creator_id)
     const decryptedEvent = decryptEvent(event.encrypted_event, creator.secret_key)
     return encryptEvent(decryptedEvent, privateKey)
