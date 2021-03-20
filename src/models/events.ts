@@ -1,6 +1,7 @@
 import { pool } from "../db/db"
 import { decrypt, encrypt } from "../encryption/secretBox"
 import { verifyJWT } from "../models/jwt"
+import { SortedEvents } from "./types"
 
 export const findCreatorIDFromToken = async (token: string) => {
     const payload: any = verifyJWT(token)
@@ -70,8 +71,8 @@ export const userEventIDLookup = async (user_id: string) => {
 }
 
 export const eventSorter = (events: any[]) => {
-  const sorted_events = {myEvents: [""],
-                        invitedEvents: [""] }
+  const sorted_events: SortedEvents = {myEvents: [],
+                        invitedEvents: [] }
   events.forEach(row => {
     if(row.creator === true){
       sorted_events.myEvents.push(row.event_id)
@@ -94,10 +95,10 @@ export const eventsSerializer = async (username: string, privateKey: string) => 
     const user_id = await lookupUserIDs(username)
     const events = await userEventIDLookup(user_id)
     events.map(async (eventIDAndCreatorID) => {
-    const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
-    const creator = await findCreator(event.creator_id)
-    const decryptedEvent = decryptEvent(event.encrypted_event, creator.secret_key)
-    return encryptEvent(decryptedEvent, privateKey)
+      const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
+      const creator = await findCreator(event.creator_id)
+      const decryptedEvent = decryptEvent(event.encrypted_event, creator.secret_key)
+      return encryptEvent(decryptedEvent, privateKey)
   })
   
   return eventSorter(events)
