@@ -40,19 +40,19 @@ it('sorts events into creator or invitee', async () => {
   const events = [{"creator": true, "event_id": "02001244-0da2-4876-952e-5f42c5e243fd"},
   {"creator": false, "event_id": "02001244-0da2-4876-952e-5f42c5e243fd"}]
   const sortedEevents = eventSorter(events)
-  expect(sortedEevents).toStrictEqual({"invitedEvents": ["", "02001244-0da2-4876-952e-5f42c5e243fd"], "myEvents": ["", "02001244-0da2-4876-952e-5f42c5e243fd"]});
+  expect(sortedEevents).toStrictEqual({"invitedEvents": ["02001244-0da2-4876-952e-5f42c5e243fd"], "myEvents": ["02001244-0da2-4876-952e-5f42c5e243fd"]});
 });
 
 it('creates two arrays if no events are submitted', async () => {
   const events: any[] = []
   const sortedEevents = eventSorter(events)
-  expect(sortedEevents).toStrictEqual({"invitedEvents": [""], "myEvents": [""]});
+  expect(sortedEevents).toStrictEqual({"invitedEvents": [], "myEvents": []});
 });
 
 it('returns empty arrays when no events are found', async () => {
   const creator = await insertUser("noEventsUser", "test2", "secretKeyTest");
   const events = await eventsSerializer(creator.user_name, secretKey)
-  expect(events).toStrictEqual({"invitedEvents": [""], "myEvents": [""]})
+  expect(events).toStrictEqual({"invitedEvents": [], "myEvents": []})
 });
 
 it('returns the encrypted event string', async () =>{
