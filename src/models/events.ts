@@ -12,7 +12,7 @@ export const findCreatorIDFromToken = async (token: string) => {
       }
     }
     catch(err){
-      console.log()
+      console.log(err)
     }
 }
 
@@ -102,11 +102,23 @@ export const lookupEventFromID = async (eventId: string) => {
  
 export const eventsSerializer = async (userID: string, privateKey: string) => {
     const events = await userEventIDLookup(userID)
-    const sessionEvents = await Promise.all(events.map(async (eventIDAndCreatorID) => {
+    const myEvents = await Promise.all(events.map(async (eventIDAndCreatorID) => {
       const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
       const creatorSK = await findCreatorSecretKey(event.creator_id)
+      if(creatorSK === privateKey){
       const decryptedEvent = decryptEvent(event.encrypted_event, creatorSK)
       return encryptEvent(decryptedEvent, privateKey)
+      }
   }))
-  return eventSorter(sessionEvents)
+  
+    const invitedEvents = await Promise.all(events.map(async (eventIDAndCreatorID) => {
+      const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
+      const creatorSK = await findCreatorSecretKey(event.creator_id)
+      if(creatorSK !== privateKey){
+      const decryptedEvent = decryptEvent(event.encrypted_event, creatorSK)
+      return encryptEvent(decryptedEvent, privateKey)
+      }
+  }))
+  const sessionEvents ={myEvents: myEvents, invitedEvents: invitedEvents}
+  return sessionEvents
 }
