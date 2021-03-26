@@ -1,7 +1,7 @@
-import { box_keyPair, secretbox, SecretBoxLength, secretbox_open } from 'tweetnacl-ts';
-import { randomBytes } from 'crypto';
+import { decode as decodeBase64, encode as encodeBase64 } from '@stablelib/base64';
 import { decode as decodeUTF8, encode as encodeUTF8 } from '@stablelib/utf8';
-import { encode as encodeBase64, decode as decodeBase64 } from '@stablelib/base64';
+import { randomBytes } from 'crypto';
+import { box_keyPair, secretbox, SecretBoxLength, secretbox_open } from 'tweetnacl-ts';
 
 export const keyGen = () => {
   const key = box_keyPair().secretKey;

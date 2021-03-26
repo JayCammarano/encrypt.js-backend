@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 export const validInfo = (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
 

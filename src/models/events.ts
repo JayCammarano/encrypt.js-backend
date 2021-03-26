@@ -1,16 +1,36 @@
 import { pool } from "../db/db"
 import { decrypt, encrypt } from "../encryption/secretBox"
 import { verifyJWT } from "../models/jwt"
+import { SortedEvents } from "./types"
 
-export const findCreator = async (token: string) => {
-  try {
+export const findCreatorIDFromToken = async (token: string) => {
     const payload: any = verifyJWT(token)
-    if (payload) {
+    try{
+      if (payload) {
         const creator = await pool.query('SELECT * from users WHERE user_name = $1', [payload.user])
         return creator.rows[0]
+      }
     }
-  } catch (err) {
-    console.error(err.message);
+    catch(err){
+      console.log(err)
+    }
+}
+
+export const findCreatorSecretKey = async (creator_id: string) => {
+  try {
+        const creator = await pool.query('SELECT secret_key from users WHERE user_id = $1', [creator_id])
+        return creator.rows[0].secret_key
+    } catch (err) {
+    console.error("findCreator" + err.message);
+  }
+}
+
+export const findCreator = async (creator_id: string) => {
+  try {
+        const creator = await pool.query('SELECT secret_key from users WHERE user_id = $1', [creator_id])
+        return creator.rows[0]
+    } catch (err) {
+    console.error("findCreator" + err.message);
   }
 }
 
@@ -60,8 +80,8 @@ export const userEventIDLookup = async (user_id: string) => {
 }
 
 export const eventSorter = (events: any[]) => {
-  const sorted_events = {myEvents: [""],
-                        invitedEvents: [""] }
+  const sorted_events: SortedEvents = {myEvents: [],
+                        invitedEvents: [] }
   events.forEach(row => {
     if(row.creator === true){
       sorted_events.myEvents.push(row.event_id)
@@ -80,16 +100,25 @@ export const lookupEventFromID = async (eventId: string) => {
     }
   }
  
-export const eventsSerializer = async (username: string, privateKey: string) => {
-    const user_id = await lookupUserIDs(username)
-    const events = await userEventIDLookup(user_id)
-    events.map(async (eventIDAndCreatorID) => {
-    const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
-    const creator = await findCreator(event.creator_id)
-    
-    const decryptedEvent = decryptEvent(event, creator.privateKey)
-    return encryptEvent(decryptedEvent, privateKey)
-  })
+export const eventsSerializer = async (userID: string, privateKey: string) => {
+    const events = await userEventIDLookup(userID)
+    const myEvents = await Promise.all(events.map(async (eventIDAndCreatorID) => {
+      const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
+      const creatorSK = await findCreatorSecretKey(event.creator_id)
+      if(creatorSK === privateKey){
+      const decryptedEvent = decryptEvent(event.encrypted_event, creatorSK)
+      return encryptEvent(decryptedEvent, privateKey)
+      }
+  }))
   
-  return eventSorter(events)
+    const invitedEvents = await Promise.all(events.map(async (eventIDAndCreatorID) => {
+      const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
+      const creatorSK = await findCreatorSecretKey(event.creator_id)
+      if(creatorSK !== privateKey){
+      const decryptedEvent = decryptEvent(event.encrypted_event, creatorSK)
+      return encryptEvent(decryptedEvent, privateKey)
+      }
+  }))
+  const sessionEvents ={myEvents: myEvents, invitedEvents: invitedEvents}
+  return sessionEvents
 }
