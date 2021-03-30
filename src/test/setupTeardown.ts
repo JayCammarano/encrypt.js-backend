@@ -29,8 +29,8 @@ export const setup = () => {
 }
 
 export const teardown = () => {
-    pool.query("DROP TABLE users CASCADE")
-    pool.query("DROP TABLE events CASCADE")
-    pool.query("DROP TABLE user_event")
+    pool.query("DROP TABLE users CASCADE;")
+    pool.query("DROP TABLE events CASCADE;")
+    pool.query("DROP TABLE user_event;")
 
 }
