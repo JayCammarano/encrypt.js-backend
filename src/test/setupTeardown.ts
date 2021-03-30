@@ -16,7 +16,7 @@ export const setup = () => {
     pool.query(`CREATE TABLE events(
         event_id uuid PRIMARY KEY DEFAULT
         uuid_generate_v4(),
-        encrypted_event VARCHAR(255) NOT NULL,
+        encrypted_event VARCHAR(1028) NOT NULL,
         creator_id VARCHAR(255) NOT NULL
     );`)
 
