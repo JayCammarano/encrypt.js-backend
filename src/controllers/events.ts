@@ -6,7 +6,7 @@ const newEvent = async (req: Request, res: Response) => {
     const { encryptedEvent } = req.body;
     const token = req.header('token');
     if(!token){
-      res.status(500).send('Not Authorized')
+      res.status(500).json('Not Authorized')
     }
     else{
       try {
@@ -14,9 +14,8 @@ const newEvent = async (req: Request, res: Response) => {
         const event_id = await insertEvent(encryptedEvent, creator.user_id)
         const decryptedEvent = decrypt(encryptedEvent, creator.secret_key)
         await addUsersToEvent(decryptedEvent.invitees, event_id, creator.user_id)
-        res.status(200).send('success')
       } catch (error) {
-        res.status(500).send('Errors: \n' + error)
+        return error
       }
     }
 }
