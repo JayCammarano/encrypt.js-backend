@@ -37,7 +37,7 @@ export const findCreator = async (creator_id: string) => {
 const lookupUserIDs = async (user: string) => {
   try {
     const user_id = await pool.query('SELECT user_id from users WHERE user_name = $1', [user])
-    if (user_id) {
+    if (user_id.rows[0]) {
       return user_id.rows[0].user_id
     }
   } catch (error) {
@@ -49,12 +49,18 @@ export const addUsersToEvent = async (invitees: string[], event_id: number, crea
   pool.query('INSERT INTO user_event (user_id, event_id, creator) VALUES ($1, $2, $3) RETURNING *', [creator_id, event_id, 1]);
   
   const invitee_ids: Promise<string[]> =  Promise.all(invitees.map(async (user: string) => {
-   return lookupUserIDs(user)
+   const userID = lookupUserIDs(user)
+   if(userID){
+     return userID 
+   }
+   return undefined
   }));
 
   (await invitee_ids).forEach(async (user_id: string) => {
     try {
-      await pool.query('INSERT INTO user_event (user_id, event_id, creator) VALUES ($1, $2, $3)', [user_id, event_id, 0])
+      if(user_id){
+        await pool.query('INSERT INTO user_event (user_id, event_id, creator) VALUES ($1, $2, $3)', [user_id, event_id, 0])
+      }
     } catch (error) {
       console.log(error)
     }
@@ -70,8 +76,10 @@ export const encryptEvent = (event: object, privateKey: string) => {
 }
 
 export const insertEvent = async (encryptedEvent: string, creatorId: string) => {
-        const eventObject = await pool.query('INSERT INTO events (encrypted_event, creator_id) VALUES ($1, $2) RETURNING *', [encryptedEvent, creatorId])
-        return eventObject.rows[0].event_id
+  console.log("hello")
+  const eventObject = await pool.query('INSERT INTO events (encrypted_event, creator_id) VALUES ($1, $2) RETURNING event_id;', [encryptedEvent, creatorId])
+  console.log("event ")
+  return eventObject.rows[0].event_id
 }
 
 export const userEventIDLookup = async (user_id: string) => {
@@ -119,6 +127,16 @@ export const eventsSerializer = async (userID: string, privateKey: string) => {
       return encryptEvent(decryptedEvent, privateKey)
       }
   }))
-  const sessionEvents ={myEvents: myEvents, invitedEvents: invitedEvents}
+  const filteredMyEvents = myEvents.filter(function(myEvent){
+    if(myEvent !== undefined){
+      return myEvent
+    }
+  })
+  const filteredInEvents = invitedEvents.filter(function(inEvent){
+    if(inEvent !== undefined){
+      return inEvent
+    }
+  })
+  const sessionEvents = {myEvents: filteredMyEvents, invitedEvents: filteredInEvents}
   return sessionEvents
 }
