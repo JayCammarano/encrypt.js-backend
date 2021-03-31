@@ -20,6 +20,7 @@ CREATE TABLE events(
 CREATE TABLE user_event (
     user_id uuid REFERENCES "users" (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
     event_id uuid REFERENCES "events" (event_id) ON UPDATE CASCADE,
+    accepted boolean DEFAULT FALSE NOT NULL, 
     creator boolean NOT NULL,
     CONSTRAINT user_event_pkey PRIMARY KEY (event_id, user_id)
 );
