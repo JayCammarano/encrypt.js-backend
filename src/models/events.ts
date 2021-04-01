@@ -3,12 +3,12 @@ import { decrypt, encrypt } from "../encryption/secretBox"
 import { verifyJWT } from "../models/jwt"
 import { SortedEvents } from "./types"
 
-export const findCreatorIDFromToken = async (token: string) => {
+export const findIDFromToken = async (token: string) => {
     const payload: any = verifyJWT(token)
     try{
       if (payload) {
-        const creator = await pool.query('SELECT * from users WHERE user_name = $1', [payload.user])
-        return creator.rows[0]
+        const user = await pool.query('SELECT * from users WHERE user_name = $1', [payload.user])
+        return user.rows[0]
       }
     }
     catch(err){
@@ -46,7 +46,7 @@ const lookupUserIDs = async (user: string) => {
 }
 
 export const addUsersToEvent = async (invitees: string[], event_id: number, creator_id: number) => {
-  pool.query('INSERT INTO user_event (user_id, event_id, creator) VALUES ($1, $2, $3) RETURNING *', [creator_id, event_id, 1]);
+  pool.query('INSERT INTO user_event (user_id, event_id, creator, accepted) VALUES ($1, $2, $3, $4) RETURNING *', [creator_id, event_id, 1, true]);
   
   const invitee_ids: Promise<string[]> =  Promise.all(invitees.map(async (user: string) => {
    const userID = lookupUserIDs(user)
@@ -76,14 +76,12 @@ export const encryptEvent = (event: object, privateKey: string) => {
 }
 
 export const insertEvent = async (encryptedEvent: string, creatorId: string) => {
-  console.log("hello")
   const eventObject = await pool.query('INSERT INTO events (encrypted_event, creator_id) VALUES ($1, $2) RETURNING event_id;', [encryptedEvent, creatorId])
-  console.log("event ")
   return eventObject.rows[0].event_id
 }
 
 export const userEventIDLookup = async (user_id: string) => {
-  const events = await pool.query('SELECT event_id, creator from user_event WHERE user_id = $1', [user_id])
+  const events = await pool.query('SELECT event_id, creator, accepted from user_event WHERE user_id = $1', [user_id])
   return events.rows
 }
 
@@ -122,9 +120,13 @@ export const eventsSerializer = async (userID: string, privateKey: string) => {
     const invitedEvents = await Promise.all(events.map(async (eventIDAndCreatorID) => {
       const event = await lookupEventFromID(eventIDAndCreatorID.event_id)
       const creatorSK = await findCreatorSecretKey(event.creator_id)
-      if(creatorSK !== privateKey){
-      const decryptedEvent = decryptEvent(event.encrypted_event, creatorSK)
-      return encryptEvent(decryptedEvent, privateKey)
+      if(creatorSK !== privateKey && eventIDAndCreatorID.accepted){
+        const decryptedEvent = decryptEvent(event.encrypted_event, creatorSK)
+        return {encryptedEvent: encryptEvent(decryptedEvent, privateKey), accepted: true, eventId: eventIDAndCreatorID.event_id}
+      }
+      if(creatorSK !== privateKey && !eventIDAndCreatorID.accepted){
+        const decryptedEvent = decryptEvent(event.encrypted_event, creatorSK)
+        return {encryptedEvent: encryptEvent(decryptedEvent, privateKey), accepted: false, eventId: eventIDAndCreatorID.event_id}
       }
   }))
   const filteredMyEvents = myEvents.filter(function(myEvent){
