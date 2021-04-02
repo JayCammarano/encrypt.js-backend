@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
-import newEvent from "../controllers/events";
+import newEvent, { respondToInvite } from "../controllers/events";
 import { authorizer } from '../middleware/authorization';
-const router = Router();
+const router: Router = Router();
 
 router.post('/new', authorizer, async (req: Request, res: Response) => {
   try {
@@ -12,5 +12,21 @@ router.post('/new', authorizer, async (req: Request, res: Response) => {
     res.status(500).json('Server Error');
   }
 });
+
+
+router.patch("/respond", authorizer, async (req: Request, res: Response) => {
+  try {
+    respondToInvite(req, res)
+  } catch (error) {
+    console.log(error)
+  }
+})
+router.delete("/respond", authorizer, async (req: Request, res: Response) => {
+  try {
+    respondToInvite(req, res)
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 export { router };
