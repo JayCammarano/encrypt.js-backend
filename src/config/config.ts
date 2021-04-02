@@ -4,7 +4,7 @@ dotenv();
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';
 const SERVER_PORT = process.env.SERVER_PORT || 1337;
 const SECRET = process.env.JWTSECRET || 'defaultSecret';
-const SERVER_NAMESPACE = process.env.NAMESPACE || 'Server';
+const SERVER_NAMESPACE = process.env.SERVERNAME || 'Server';
 
 const SERVER = {
   hostname: SERVER_HOSTNAME,
