@@ -1,4 +1,4 @@
 export type SortedEvents = {
-    myEvents: string[],
-    invitedEvents: string[] 
-}
+  myEvents: string[];
+  invitedEvents: string[];
+};
