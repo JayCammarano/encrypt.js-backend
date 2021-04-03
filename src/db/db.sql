@@ -1,4 +1,4 @@
-CREATE DATABASE encrypted_events_ts_test;
+CREATE DATABASE encrypted_events_ts_development;
 
 create extension if not exists "uuid-ossp";
 

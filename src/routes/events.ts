@@ -1,11 +1,11 @@
 import { Request, Response, Router } from 'express';
-import newEvent, { respondToInvite } from "../controllers/events";
+import newEvent, { respondToInvite } from '../controllers/events';
 import { authorizer } from '../middleware/authorization';
 const router: Router = Router();
 
 router.post('/new', authorizer, async (req: Request, res: Response) => {
   try {
-    newEvent(req, res)
+    newEvent(req, res);
     res.status(200).json('Success');
   } catch (err) {
     console.error(err.message);
@@ -13,20 +13,19 @@ router.post('/new', authorizer, async (req: Request, res: Response) => {
   }
 });
 
-
-router.patch("/respond", authorizer, async (req: Request, res: Response) => {
+router.patch('/respond', authorizer, async (req: Request, res: Response) => {
   try {
-    respondToInvite(req, res)
+    respondToInvite(req, res);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-})
-router.delete("/respond", authorizer, async (req: Request, res: Response) => {
+});
+router.delete('/respond', authorizer, async (req: Request, res: Response) => {
   try {
-    respondToInvite(req, res)
+    respondToInvite(req, res);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-})
+});
 
 export { router };

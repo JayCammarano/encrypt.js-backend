@@ -1,12 +1,22 @@
-import { userExists, bcryptPassword, insertUser, getUser, bcryptCompare } from '../../models/auth';
-import { setup, teardown } from "../setupTeardown"
+import {
+  userExists,
+  bcryptPassword,
+  insertUser,
+  getUser,
+  bcryptCompare
+} from '../../models/auth';
+import { setup, teardown } from '../setupTeardown';
 
 const username = 'Testestestestest';
 const password = 'testestestestsetsetestsetsetsetsetet';
 const secretKey = 'secretKeyTest';
 
-beforeAll(() => { setup })
-afterAll(() => { teardown })
+beforeAll(() => {
+  setup;
+});
+afterAll(() => {
+  teardown;
+});
 
 it('checks if user exists', async () => {
   const user = 'username';

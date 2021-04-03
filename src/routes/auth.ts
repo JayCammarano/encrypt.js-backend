@@ -7,7 +7,6 @@ const router = Router();
 router.post('/register', validInfo, signUp);
 router.post('/signin', validInfo, signIn);
 router.get('/is_verify', authorizer, async (_req: Request, res: Response) => {
-
   try {
     res.json(true);
   } catch (err) {

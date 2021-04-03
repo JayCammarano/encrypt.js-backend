@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import { keyGen } from '../encryption/secretBox';
-import { bcryptCompare, bcryptPassword, getUser, insertUser, userExists } from '../models/auth';
+import {
+  bcryptCompare,
+  bcryptPassword,
+  getUser,
+  insertUser,
+  userExists
+} from '../models/auth';
 import { genJWT } from '../models/jwt';
 
 export const signUp = async (req: Request, res: Response) => {
@@ -25,7 +31,10 @@ export const signIn = async (req: Request, res: Response) => {
   } else {
     const userObject = await getUser(username);
 
-    const validPassword = await bcryptCompare(userObject.user_password, password);
+    const validPassword = await bcryptCompare(
+      userObject.user_password,
+      password
+    );
     if (!validPassword) {
       return res.status(401).json('Password or Username is invalid');
     }
