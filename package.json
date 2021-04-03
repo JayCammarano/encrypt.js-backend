@@ -10,8 +10,9 @@
     "dev:debug": "tsnd --respawn src/server.ts",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watchAll",
-    "build": "rm -rf build && prettier --write src/ && tsc && jest --coverage",
+    "build": "rm -rf build && prettier --write src/ && tsc",
     "build:watch": "onchange 'src/**/*.ts' -- npm run build",
+    "start": "node ./build/server.js",
     "view:coverage": "serve coverage/lcov-report",
     "clean": "rm -rf coverage src/**/*.js src/**/*.map build"
   },
@@ -30,13 +31,13 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "pg": "^8.5.1",
+    "prettier": "^2.2.1",
     "tweetnacl-ts": "^1.0.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/body-parser": "^1.19.0",
     "@types/cors": "^2.8.9",
-    "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.11",
     "@types/jest": "^26.0.19",
     "@types/node": "^14.14.12",

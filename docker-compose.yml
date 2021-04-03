@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - 1337:1337
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - db
+    # You could use this in prod too if you really wanted so long as you're using docker-compose
+    env_file: .env
+    command: npm run dev
+  
+  db:
+    image: postgres:alpine
+    restart: always
+    env_file: .env
+  
+  # API Prod
+  ## The example below is of a prod instance. Ideally prod shouldn't be `build`ing anything, it should be done via CI (like github actions!)
+  # app:
+  #   build:
+  #     context: .
+  ## OR
+  #   image: encryptionapp/api # or whatever your published docker image name/address is
+  #   ports:
+  #     - 1337:1337
