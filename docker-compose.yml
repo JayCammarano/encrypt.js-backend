@@ -10,19 +10,25 @@ services:
     volumes:
       - ./src:/app/src
     depends_on:
-      - db
+      - db_dev
     # You could use this in prod too if you really wanted so long as you're using docker-compose
     env_file: .env
     command: npm run start
   
-  db:
+  db_dev:
     image: postgres:alpine
     restart: always
     env_file: .env
+    
+  
+  db_prod:
+    image: postgres:alpine
+    restart: always
+    env_file: .env.prod
   
   # API Prod
-  ## The example below is of a prod instance. Ideally prod shouldn't be `build`ing anything, it should be done via CI (like github actions!)
-  # app:
-  #   image: jaycammarano/encryptjs-backend:latest # or whatever your published docker image name/address is
-  #   ports:
-  #     - 1337:1337
+  production-app:
+    image: ghcr.io/jaycammarano/encryptjs-backend:latest
+    env_file: .env.prod
+    ports:
+      - 8000:8000
