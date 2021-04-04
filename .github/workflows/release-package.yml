@@ -5,7 +5,7 @@ on:
     paths-ignore:
       - "**.md"
     branches: 
-      - heroky-deploy
+      - heroku-deploy
 
 jobs:
   build:
