@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  app:
+  development-app:
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -13,7 +13,7 @@ services:
       - db
     # You could use this in prod too if you really wanted so long as you're using docker-compose
     env_file: .env
-    command: npm run dev
+    command: npm run start
   
   db:
     image: postgres:alpine
@@ -23,9 +23,6 @@ services:
   # API Prod
   ## The example below is of a prod instance. Ideally prod shouldn't be `build`ing anything, it should be done via CI (like github actions!)
   # app:
-  #   build:
-  #     context: .
-  ## OR
-  #   image: encryptionapp/api # or whatever your published docker image name/address is
+  #   image: jaycammarano/encryptjs-backend:latest # or whatever your published docker image name/address is
   #   ports:
   #     - 1337:1337
