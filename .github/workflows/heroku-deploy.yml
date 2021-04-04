@@ -1,10 +1,15 @@
 name: 'Events Backend to Heroku' #set whatevername you want to your github job
 on:
-  registry_package:
-    types: [published, updated] # set the events you would like to trigger this job
+  workflow_run:
+    workflows: ["CI"]
+    branches: [heroku-deploy]
+    types: 
+      - completed
+      
 jobs:
-  build:
+  on-success:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
