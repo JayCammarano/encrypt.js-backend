@@ -1,0 +1,20 @@
+name: 'Events Backend to Heroku' #set whatevername you want to your github job
+on:
+  registry_package:
+    types: [published, updated] # set the events you would like to trigger this job
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Deploy Docker Image to Heroku App
+        id: heroku
+        uses: jctaveras/heroku-deploy@v2.1.3
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }} # your heroku email
+          api_key: ${{ secrets.HEROKU_API_KEY }} # your  heroku api key
+          app_name: ${{ secrets.HEROKU_APP_NAME }} # you aplication name
+          dockerfile_path: '' # set the path to the folder wher the Dokerfile is located
+          options: '' # Docker Build Options
+          formation: '' # Docker Dyno Formation. By default is web
