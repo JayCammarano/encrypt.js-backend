@@ -3,4 +3,5 @@ const connectionString = process.env.DATABASE_URL+"?ssl=true"
 
 export const pool = new Pool({
   connectionString,
+  ssl: { rejectUnauthorized: false }
 })
