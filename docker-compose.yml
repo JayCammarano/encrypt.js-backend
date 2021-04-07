@@ -1,30 +1,30 @@
 version: "3.8"
 
 services:
-  development-app:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    ports:
-      - 1337:1337
-    volumes:
-      - ./src:/app/src
-    depends_on:
-      - db_dev
-    # You could use this in prod too if you really wanted so long as you're using docker-compose
-    env_file: .env
-    command: npm run start
+  # development-app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   ports:
+  #     - 1337:1337
+  #   volumes:
+  #     - ./src:/app/src
+  #   depends_on:
+  #     - db_dev
+  #   # You could use this in prod too if you really wanted so long as you're using docker-compose
+  #   env_file: .env
+  #   command: npm run start
   
-  db_dev:
-    image: postgres:alpine
-    restart: always
-    env_file: .env
+  # db_dev:
+  #   image: postgres:alpine
+  #   restart: always
+  #   env_file: .env
     
   
   db_prod:
     image: postgres:alpine
     restart: always
-    env_file: .env.prod
+    env_file: .env
   
   # API Prod
   production-app:
