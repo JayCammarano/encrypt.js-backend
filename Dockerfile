@@ -13,7 +13,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY tsconfig*.json ./
 COPY ./src ./src
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python && rm -rf /var/cache/apk/*
 RUN npm ci --quiet && npm run build
 
 # Production stage.
@@ -26,7 +25,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 COPY package*.json ./
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python && rm -rf /var/cache/apk/*
 RUN npm ci --quiet --only=production
 
 ## We just need the build to execute the command
